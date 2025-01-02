@@ -1,6 +1,7 @@
 package com.vaguehope.common.servlet;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -11,7 +12,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.slf4j.Logger;
@@ -34,7 +34,7 @@ public class RequestLoggingFilter implements Filter {
 		final String remoteAddr = req.getRemoteAddr();
 		final String requestURI = req.getRequestURI();
 		final String method = req.getMethod();
-		final String ranges = StringUtils.join(req.getHeaders("Range"), ",");
+		final String ranges = joinEnumeration(req.getHeaders("Range"), ",");
 
 		try {
 			chain.doFilter(request, response);
@@ -47,6 +47,15 @@ public class RequestLoggingFilter implements Filter {
 				LOG.info("{} {} {} {}", resp.getStatus(), method, requestURI, remoteAddr);
 			}
 		}
+	}
+
+	private static String joinEnumeration(final Enumeration<String> en, final String join) {
+		if (en == null || !en.hasMoreElements()) return null;
+		StringBuilder s = new StringBuilder(en.nextElement());
+		while (en.hasMoreElements()) {
+			s.append(join).append(en.nextElement());
+		}
+		return s.toString();
 	}
 
 	@Override
