@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -eu
+
+if ! [ -d "./src/test/java/com/vaguehope/common" ] ; then
+  echo "not running in own dir."
+  exit 1
+fi
+
+project="$1"
+file="$2"
+
+dir="../$project/"
+if ! [ -d "$dir" ] ; then
+  echo "not found: $dir"
+  exit 1
+fi
+
+target="$dir/$file"
+if [ -e "$target" ] ; then
+  echo "already exists: $target"
+  exit 1
+fi
+
+mkdir -vp "$(dirname "$target")"
+cp -v "$file" "$target"
