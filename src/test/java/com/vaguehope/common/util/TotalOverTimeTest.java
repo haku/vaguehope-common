@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TotalOverTimeTest {
@@ -60,6 +61,39 @@ public class TotalOverTimeTest {
 		ticker.addTime(30, TimeUnit.MINUTES);  // t=61m / 1m
 		t.increment(9);
 		assertEquals(16, t.get());
+	}
+
+	@Ignore
+	@Test
+	public void microBenchmark() throws Exception {
+		final int itterations = 1_000_000;
+
+		benckmarkRef(itterations);
+		benchmarkSut(itterations);
+		benckmarkRef(itterations);
+		benchmarkSut(itterations);
+	}
+
+	private static void benckmarkRef(final int itterations) {
+		long regularLong = 0;
+		final long start = System.nanoTime();
+		for (int i = 1; i <= itterations; i++) {
+			regularLong++;
+		}
+		final long durtation = System.nanoTime() - start;
+		System.out.println("Ref: " + TimeUnit.NANOSECONDS.toMillis(durtation) + "ms / " + durtation / itterations + " ns   " + regularLong);
+	}
+
+	private static void benchmarkSut(final int itterations) {
+		final FakeTicker ticker = new FakeTicker();
+		final TotalOverTime t = new TotalOverTime(1, TimeUnit.HOURS, 60, ticker);
+
+		final long start = System.nanoTime();
+		for (int i = 1; i <= itterations; i++) {
+			t.increment(1);
+		}
+		final long durtation = System.nanoTime() - start;
+		System.out.println("SUT: " + TimeUnit.NANOSECONDS.toMillis(durtation) + "ms / " + durtation / itterations + " ns   " + t.get());
 	}
 
 }
