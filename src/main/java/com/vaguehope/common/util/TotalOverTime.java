@@ -16,7 +16,11 @@ public class TotalOverTime {
 	private final AtomicLongArray ringBuffer;
 	private volatile long lastIncrementNanos;
 
-	public TotalOverTime(final long duration, final TimeUnit timeUnit, final int bucketCount, final Ticker ticker) {
+	public TotalOverTime(final long duration, final TimeUnit timeUnit, final int bucketCount) {
+		this(duration, timeUnit, bucketCount, Ticker.systemTicker());
+	}
+
+	protected TotalOverTime(final long duration, final TimeUnit timeUnit, final int bucketCount, final Ticker ticker) {
 		this.totalDurationNanos = timeUnit.toNanos(duration);
 		this.bucketDurationNanos = this.totalDurationNanos / bucketCount;
 		this.ticker = ticker;
