@@ -33,6 +33,7 @@ public class TotalOverTime {
 		final long now = this.ticker.read();
 
 		final long lastIncrement = this.lastIncrementNanos;
+		this.lastIncrementNanos = now;
 		final int expiredBucketCount = (int) ((now - lastIncrement) / this.bucketDurationNanos);
 		if (expiredBucketCount > 0) {
 			final int lastIncrementedBucket = (int) ((lastIncrement % this.totalDurationNanos) / this.bucketDurationNanos);
@@ -47,7 +48,6 @@ public class TotalOverTime {
 		final int currentBucket = (int) ((now % this.totalDurationNanos) / this.bucketDurationNanos);
 		this.ringBuffer.addAndGet(currentBucket, delta);
 		this.total.addAndGet(delta);
-		this.lastIncrementNanos = now;
 	}
 
 	public long get() {
