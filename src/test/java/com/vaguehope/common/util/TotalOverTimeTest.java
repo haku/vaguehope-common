@@ -14,7 +14,7 @@ public class TotalOverTimeTest {
 		final FakeTicker ticker = new FakeTicker();
 		final TotalOverTime t = new TotalOverTime(1, TimeUnit.HOURS, 60, ticker);
 
-		for (int i = 1; i <= 100; i++) {
+		for (int i = 1; i <= 200; i++) {
 			t.increment(1);
 			assertEquals(Math.min(i, 60), t.get());
 			ticker.addTime(1, TimeUnit.MINUTES);
@@ -61,6 +61,19 @@ public class TotalOverTimeTest {
 		ticker.addTime(30, TimeUnit.MINUTES);  // t=61m / 1m
 		t.increment(9);
 		assertEquals(16, t.get());
+	}
+
+	@Test
+	public void itSurvivesVeryLongInactivity() throws Exception {
+		final FakeTicker ticker = new FakeTicker();
+		final TotalOverTime t = new TotalOverTime(5, TimeUnit.MINUTES, 10, ticker);
+
+		t.increment(5);  // t=0m
+		assertEquals(5, t.get());
+
+		ticker.addTime(1, TimeUnit.HOURS);  // t=1h
+		t.increment(1);
+		assertEquals(1, t.get());
 	}
 
 	@Ignore
