@@ -76,6 +76,18 @@ public class TotalOverTimeTest {
 		assertEquals(1, t.get());
 	}
 
+	@Test
+	public void itExpiresDataOnRead() throws Exception {
+		final FakeTicker ticker = new FakeTicker();
+		final TotalOverTime t = new TotalOverTime(5, TimeUnit.MINUTES, 10, ticker);
+
+		t.increment(5);  // t=0m
+		assertEquals(5, t.get());
+
+		ticker.addTime(1, TimeUnit.HOURS);  // t=1h
+		assertEquals(0, t.get());
+	}
+
 	@Ignore
 	@Test
 	public void microBenchmark() throws Exception {
