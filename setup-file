@@ -9,7 +9,7 @@ fi
 project="$1"
 file="$2"
 
-dir="../$project/"
+dir="../$project"
 if ! [ -d "$dir" ] ; then
   echo "not found: $dir"
   exit 1
