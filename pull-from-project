@@ -3,7 +3,7 @@ set -eu
 
 project="$1"
 
-if ! [ -d "./src/test/java/com/vaguehope/common" ] ; then
+if ! [ -d "./src/test/java/faecommon" ] ; then
   echo "not running in own dir."
   exit 1
 fi
